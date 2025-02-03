@@ -4,10 +4,21 @@ body, html, #root {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f4f4f4;
+  transition: background 0.3s;
+}
+
+.dark-mode {
+  background: #333;
+  color: #eee;
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
 }

@@ -1,5 +1,5 @@
 // src/components/PlayScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/PlayScreen.css';
 
 const matches = [
@@ -15,6 +15,12 @@ function PlayScreen({ navigate }) {
     scores: matches.map(match => ({ matchId: match.id, scoreA: "", scoreB: "" })),
   });
 
+  // Load previous data from localStorage if exists
+  useEffect(() => {
+    const storedData = localStorage.getItem('userData');
+    if (storedData) setUserData(JSON.parse(storedData));
+  }, []);
+
   const handleScoreChange = (matchId, team, value) => {
     setUserData(prevData => {
       const updatedScores = prevData.scores.map(score => {
@@ -23,18 +29,27 @@ function PlayScreen({ navigate }) {
         }
         return score;
       });
-      return { ...prevData, scores: updatedScores };
+      const newData = { ...prevData, scores: updatedScores };
+      localStorage.setItem('userData', JSON.stringify(newData));
+      return newData;
     });
   };
 
   const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    const newData = { ...userData, [e.target.name]: e.target.value };
+    setUserData(newData);
+    localStorage.setItem('userData', JSON.stringify(newData));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     alert(`Submitted!\nName: ${userData.name}\nPub: ${userData.pub}\nScores: ${JSON.stringify(userData.scores, null, 2)}`);
-    // You can process the data or send it to a backend here.
+    // Implement further processing (e.g., API call)
+  };
+
+  const handleShare = () => {
+    // For demo purposes, we'll simply alert a share message.
+    alert('Share your results on social media!');
   };
 
   return (
@@ -75,6 +90,7 @@ function PlayScreen({ navigate }) {
           <input type="text" id="pub" name="pub" value={userData.pub} onChange={handleChange} required />
         </div>
         <button type="submit" className="submit-button">Submit</button>
+        <button type="button" className="share-button" onClick={handleShare}>Share</button>
         <button type="button" className="back-button" onClick={() => navigate('home')}>Back</button>
       </form>
     </div>
