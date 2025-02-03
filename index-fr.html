@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Six Nations Prédicteur | Pub Cork and Cavan</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Language Switch Button -->
+  <div class="language-switch">
+    <a href="index.html" title="Switch to English">
+      <img src="en-flag.png" alt="English Flag" />
+    </a>
+  </div>
+
+  <!-- Cork and Cavan Pub Ad Banner -->
+  <header class="pub-ad">
+    <div class="pub-content">
+      <img src="cork-cavan-logo.png" alt="Pub Cork and Cavan" />
+      <h2>🏆 Prédisez les Scores & Gagnez une Pinte GRATUITE ! 🍺</h2>
+      <p>Sponsorisé par le <strong>Pub Cork and Cavan</strong> – Meilleur endroit pour regarder le rugby !</p>
+    </div>
+  </header>
+
+  <!-- Prediction Form -->
+  <section class="prediction-form">
+    <h2>Prédisez les Prochains Matches</h2>
+    <form id="predictionForm">
+      <input type="text" id="userName" placeholder="Votre Nom" required />
+      <div class="dropdown">
+        <label for="matchSelector">Choisissez un Match :</label>
+        <select id="matchSelector" required>
+          <option value="">Sélectionnez un Match</option>
+          <option value="Italie vs Pays de Galles">Italie vs Pays de Galles</option>
+          <option value="Angleterre vs France">Angleterre vs France</option>
+          <option value="Écosse vs Irlande">Écosse vs Irlande</option>
+        </select>
+      </div>
+      <div class="score-inputs">
+        <input type="number" id="team1Score" placeholder="Score Équipe 1" min="0" required />
+        <input type="number" id="team2Score" placeholder="Score Équipe 2" min="0" required />
+      </div>
+      <button type="submit" class="submit-btn">Soumettre votre Prédiction</button>
+    </form>
+  </section>
+
+  <!-- Container for Leaderboard and Recent Predictions -->
+  <div class="section-container">
+    <!-- Leaderboard -->
+    <section class="leaderboard glass-panel">
+      <h2>Classement 🏅</h2>
+      <ol>
+        <li>Luke Newman – 85 Points 🍺</li>
+        <li>Adam Ó Ceallaigh – 81 Points</li>
+        <li>Evren Geurin – 76 Points</li>
+        <li>Shane McDonagh – 75 Points</li>
+      </ol>
+    </section>
+
+    <!-- Recent Predictions Section -->
+    <section class="recent-guesses glass-panel">
+      <h2>Prédictions Récentes 🧐</h2>
+      <div id="guessHistory"></div>
+    </section>
+  </div>
+
+  <!-- Footer Ad -->
+  <footer class="pub-ad">
+    <p>🏉 Prédisez. Gagnez. Célébrez au <strong>Pub Cork and Cavan</strong> !</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
