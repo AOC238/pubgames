@@ -1,22 +1,17 @@
+// src/components/Header.js
 import React from 'react';
 import '../styles/Header.css';
 
-function Header() {
-  const handleSettings = () => {
-    alert('Settings clicked!');
-  };
-
-  const handleLeaderboards = () => {
-    alert('Leaderboards clicked!');
-  };
-
+function Header({ navigate }) {
   return (
     <header className="header">
-      <button className="header-btn settings-btn" onClick={handleSettings}>
+      <button className="header-btn" onClick={() => navigate('settings')}>
         Settings
       </button>
-      <div className="header-title">PubQuiz</div>
-      <button className="header-btn leaderboard-btn" onClick={handleLeaderboards}>
+      <div className="header-title" onClick={() => navigate('home')}>
+        PubQuiz
+      </div>
+      <button className="header-btn" onClick={() => navigate('leaderboard')}>
         Leaderboards
       </button>
     </header>

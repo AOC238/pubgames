@@ -1,10 +1,12 @@
+/* src/styles/Header.css */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #4CAF50;
+    background: #00796b;
     color: #fff;
     padding: 10px 20px;
+    cursor: pointer;
   }
   
   .header-btn {
