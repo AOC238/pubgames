@@ -1,0 +1,42 @@
+.home-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .home-title {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  
+  .play-button {
+    background: #2196F3;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .play-button:hover {
+    background: #1976D2;
+  }
+  
+  /* Mobile styles */
+  @media (max-width: 600px) {
+    .home-title {
+      font-size: 36px;
+    }
+    
+    .play-button {
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+  }
+  
