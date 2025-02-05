@@ -1,100 +1,75 @@
 /* src/styles/PlayScreen.css */
 .play-container {
-    flex: 1;
-    padding: 20px;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .play-form {
-    max-width: 500px;
-    width: 100%;
-    background: #fafafa;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .match-group {
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .match-group h3 {
-    margin-bottom: 10px;
-  }
-  
-  .score-inputs {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .score-inputs div {
-    flex: 1;
-    margin-right: 10px;
-  }
-  
-  .score-inputs div:last-child {
-    margin-right: 0;
-  }
-  
-  .score-inputs label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .score-inputs input {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-group input {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .submit-button,
-  .back-button {
-    background: #00796b;
-    color: #fff;
-    border: none;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-  }
-  
-  .submit-button:hover,
-  .back-button:hover {
-    background: #00695c;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 600px) {
-    .play-form {
-      padding: 10px;
-    }
-  }
-  
+  flex: 1;
+  padding: 30px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.play-form {
+  max-width: 600px;
+  width: 100%;
+  background: #fafafa;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.match-group {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.match-group h3 {
+  margin-bottom: 15px;
+}
+
+.score-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.score-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.score-input label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.score-input input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.submit-button,
+.back-button {
+  background: #00796b;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 48%;
+}
+
+.submit-button:hover,
+.back-button:hover {
+  background: #00695c;
+}

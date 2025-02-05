@@ -9,17 +9,17 @@ const matches = [
 ];
 
 function PlayScreen({ navigate }) {
+  // Redirect to register if not registered
+  useEffect(() => {
+    const registration = localStorage.getItem('registration');
+    if (!registration) {
+      navigate('register');
+    }
+  }, [navigate]);
+
   const [userData, setUserData] = useState({
-    name: "",
-    pub: "",
     scores: matches.map(match => ({ matchId: match.id, scoreA: "", scoreB: "" })),
   });
-
-  // Load previous data from localStorage if exists
-  useEffect(() => {
-    const storedData = localStorage.getItem('userData');
-    if (storedData) setUserData(JSON.parse(storedData));
-  }, []);
 
   const handleScoreChange = (matchId, team, value) => {
     setUserData(prevData => {
@@ -29,27 +29,14 @@ function PlayScreen({ navigate }) {
         }
         return score;
       });
-      const newData = { ...prevData, scores: updatedScores };
-      localStorage.setItem('userData', JSON.stringify(newData));
-      return newData;
+      return { ...prevData, scores: updatedScores };
     });
-  };
-
-  const handleChange = (e) => {
-    const newData = { ...userData, [e.target.name]: e.target.value };
-    setUserData(newData);
-    localStorage.setItem('userData', JSON.stringify(newData));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Submitted!\nName: ${userData.name}\nPub: ${userData.pub}\nScores: ${JSON.stringify(userData.scores, null, 2)}`);
-    // Implement further processing (e.g., API call)
-  };
-
-  const handleShare = () => {
-    // For demo purposes, we'll simply alert a share message.
-    alert('Share your results on social media!');
+    // In production, send data to backend here
+    alert(`Scores Submitted!\n${JSON.stringify(userData.scores, null, 2)}`);
   };
 
   return (
@@ -60,8 +47,8 @@ function PlayScreen({ navigate }) {
           <div key={match.id} className="match-group">
             <h3>{match.teamA} vs {match.teamB}</h3>
             <div className="score-inputs">
-              <div>
-                <label>{match.teamA}:</label>
+              <div className="score-input">
+                <label>{match.teamA} Score:</label>
                 <input
                   type="number"
                   value={userData.scores.find(s => s.matchId === match.id).scoreA}
@@ -69,8 +56,8 @@ function PlayScreen({ navigate }) {
                   required
                 />
               </div>
-              <div>
-                <label>{match.teamB}:</label>
+              <div className="score-input">
+                <label>{match.teamB} Score:</label>
                 <input
                   type="number"
                   value={userData.scores.find(s => s.matchId === match.id).scoreB}
@@ -81,17 +68,12 @@ function PlayScreen({ navigate }) {
             </div>
           </div>
         ))}
-        <div className="form-group">
-          <label htmlFor="name">Your Name:</label>
-          <input type="text" id="name" name="name" value={userData.name} onChange={handleChange} required />
+        <div className="button-group">
+          <button type="submit" className="submit-button">Submit</button>
+          <button type="button" className="back-button" onClick={() => navigate('home')}>
+            Back
+          </button>
         </div>
-        <div className="form-group">
-          <label htmlFor="pub">Your Pub:</label>
-          <input type="text" id="pub" name="pub" value={userData.pub} onChange={handleChange} required />
-        </div>
-        <button type="submit" className="submit-button">Submit</button>
-        <button type="button" className="share-button" onClick={handleShare}>Share</button>
-        <button type="button" className="back-button" onClick={() => navigate('home')}>Back</button>
       </form>
     </div>
   );
