@@ -2,7 +2,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+console.log('MONGO_URI:', process.env.MONGO_URI);
+// src/server/server.js
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
+// For debugging: print the connection string
+console.log('MONGO_URI:', process.env.MONGO_URI);
 
 const authRoutes = require('./routes/auth');
 const scoreRoutes = require('./routes/scores');
