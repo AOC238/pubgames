@@ -1,54 +1,59 @@
 /* src/styles/Home.css */
 .home-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-    background: url('https://via.placeholder.com/1200x600') no-repeat center/cover;
-    color: #fff;
-  }
-  
-  .home-title {
-    font-size: 48px;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px #000;
-  }
-  
-  .home-subtitle {
-    font-size: 20px;
-    margin-bottom: 30px;
-    text-shadow: 1px 1px 3px #000;
-  }
-  
-  .play-button {
-    background: #ff5722;
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    font-size: 22px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .play-button:hover {
-    background: #e64a19;
-  }
-  
-  /* Mobile adjustments */
-  @media (max-width: 600px) {
-    .home-title {
-      font-size: 36px;
-    }
-    .home-subtitle {
-      font-size: 18px;
-    }
-    .play-button {
-      padding: 12px 24px;
-      font-size: 18px;
-    }
-  }
-  
+  text-align: center;
+  padding: 20px;
+}
+
+.home-title {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.category-btn {
+  background: #00796b;
+  color: #fff;
+  border: none;
+  padding: 15px 25px;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 80%;
+  max-width: 400px;
+  transition: background 0.3s;
+}
+
+.category-btn:hover {
+  background: #00695c;
+}
+
+.featured-games {
+  margin-top: 40px;
+}
+
+.featured-games h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.featured-btn {
+  background: #ff5722;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.featured-btn:hover {
+  background: #e64a19;
+}
