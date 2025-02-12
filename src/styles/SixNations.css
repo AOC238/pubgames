@@ -1,31 +1,76 @@
-/* src/styles/SixNations.css */
-.sixnations-container {
-    text-align: center;
+/* src/styles/PlayScreen.css */
+.play-container {
+    flex: 1;
     padding: 30px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .sixnations-container h2 {
-    font-size: 32px;
-    margin-bottom: 20px;
+  .play-form {
+    max-width: 600px;
+    width: 100%;
+    background: #fafafa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
-  .sixnations-container p {
-    font-size: 18px;
-    margin-bottom: 30px;
+  .match-group {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
   }
   
-  .sixnations-container button {
+  .match-group h3 {
+    margin-bottom: 15px;
+  }
+  
+  .score-inputs {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .score-input {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .score-input label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .score-input input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .submit-button,
+  .back-button {
     background: #00796b;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 15px;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s;
+    width: 48%;
   }
   
-  .sixnations-container button:hover {
+  .submit-button:hover,
+  .back-button:hover {
     background: #00695c;
   }
   
