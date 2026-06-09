@@ -1,14 +1,1157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pub Quiz Challenge</title>
-    <meta name="description" content="Test your knowledge with the ultimate pub quiz! Challenge friends, answer trivia, and see if you can top the leaderboard." />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pub Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#110800;--s1:#1c1000;--s2:#271600;--s3:#321c00;--s4:#3e2400;
+  --bdr:rgba(255,175,45,0.1);--bdr2:rgba(255,175,45,0.22);
+  --amber:#f59e0b;--amber2:#d97706;--aglow:rgba(245,158,11,0.2);
+  --cream:#fef3c7;--warm:#fde68a;--pale:#fffbeb;
+  --red:#ef4444;--grn:#22c55e;--blue:#60a5fa;--purple:#a78bfa;
+  --muted:#7a5520;--muted2:#b8883a;--text:#fef3c7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;
+  background-image:radial-gradient(ellipse 130% 55% at 50% -5%,rgba(245,158,11,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 90% 90%,rgba(180,80,0,0.04) 0%,transparent 60%);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.86);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes sl{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slr{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;animation:fadeUp .3s ease both;}
+.fscreen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.fscreen.active{display:flex;animation:fadeUp .3s ease both;}
+/* NAV */
+.tnav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 22px;background:rgba(17,8,0,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--bdr);}
+.nlogo{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.07em;cursor:pointer;color:var(--cream);}
+.nlogo span{color:var(--amber);}
+.nr{display:flex;align-items:center;gap:9px;}
+.nmode{font-size:.64rem;text-transform:uppercase;letter-spacing:.16em;color:var(--muted2);font-weight:700;}
+.nuser{display:flex;align-items:center;gap:8px;background:rgba(245,158,11,.07);border:1px solid var(--bdr);border-radius:100px;padding:5px 13px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.nuser:hover{background:rgba(245,158,11,.14);border-color:var(--bdr2);}
+.nav{width:24px;height:24px;border-radius:50%;background:var(--amber);color:#110800;font-size:.69rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nbtn{background:none;border:1px solid var(--bdr);border-radius:8px;padding:5px 13px;color:var(--muted2);font-family:'Nunito',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.nbtn:hover{border-color:var(--bdr2);color:var(--cream);}
+/* FORMS */
+input[type=text],input[type=password],select{background:rgba(255,175,45,.05);border:1.5px solid rgba(255,175,45,.12);border-radius:11px;padding:10px 14px;color:var(--cream);font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;width:100%;transition:border-color .2s,background .2s;}
+input:focus,select:focus{border-color:rgba(245,158,11,.5);background:rgba(255,175,45,.08);}
+input::placeholder{color:var(--muted);}
+label{display:block;font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:700;}
+.fg{margin-bottom:14px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a5520'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;}
+select option{background:#1c1000;}
+/* BUTTONS */
+.btn{border:none;border-radius:12px;padding:12px 26px;font-family:'Bebas Neue',sans-serif;font-size:1.12rem;letter-spacing:.06em;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:7px;}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+.btn:disabled{opacity:.4;cursor:default;transform:none;}
+.bam{background:linear-gradient(135deg,var(--amber),var(--amber2));color:#110800;box-shadow:0 4px 18px var(--aglow);}
+.bam:hover{box-shadow:0 8px 28px rgba(245,158,11,.4);}
+.bred{background:var(--red);color:#fff;}
+.bgh{background:rgba(255,175,45,.05);border:1px solid var(--bdr) !important;color:var(--muted2);font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;border-radius:11px;padding:10px 18px;}
+.bgh:hover{background:rgba(255,175,45,.1);color:var(--cream);border-color:var(--bdr2) !important;}
+.bsm{padding:7px 13px;font-size:.78rem;border-radius:8px;}
+.bblu{background:var(--blue);color:#110800;}
+.bw100{width:100%;}
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:18px;padding:24px;}
+.cdsm{background:var(--s1);border:1px solid var(--bdr);border-radius:13px;padding:17px;}
+.divd{height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent);margin:16px 0;}
+.badge{display:inline-block;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:6px;font-weight:800;}
+.bam-b{background:rgba(245,158,11,.14);color:var(--amber);}
+.bred-b{background:rgba(239,68,68,.14);color:var(--red);}
+.bblu-b{background:rgba(96,165,250,.14);color:var(--blue);}
+.bgrn-b{background:rgba(34,197,94,.14);color:var(--grn);}
+.bpur-b{background:rgba(167,139,250,.14);color:var(--purple);}
+/* ALERTS */
+.al{border-radius:10px;padding:10px 14px;font-size:.83rem;margin-bottom:13px;display:none;animation:fadeUp .2s ease both;}
+.al.on{display:block;}
+.al-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.27);color:#fca5a5;}
+.al-ok{background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.2);color:#86efac;}
+.al-info{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--warm);}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s3);border:1px solid var(--bdr2);border-radius:100px;padding:10px 22px;font-size:.84rem;font-weight:700;z-index:9999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;color:var(--cream);}
+.toast.on{transform:translateX(-50%) translateY(0);}
+/* OVERLAY / MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(6px);}
+.ov.on{display:flex;}
+.modal{background:var(--s1);border:1px solid rgba(245,158,11,.15);border-radius:22px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;animation:pop .25s ease both;}
+.modal::-webkit-scrollbar{width:3px;}.modal::-webkit-scrollbar-thumb{background:rgba(245,158,11,.2);border-radius:2px;}
+.mhd{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.mtit{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;letter-spacing:.04em;color:var(--cream);}
+.msub{font-size:.76rem;color:var(--muted2);margin-top:3px;}
+.mx{background:none;border:none;color:var(--muted2);font-size:1.3rem;cursor:pointer;padding:4px;transition:color .2s;flex-shrink:0;}
+.mx:hover{color:var(--cream);}
+.mbd{padding:18px 24px 24px;}
+/* AUTH */
+.awrap{width:100%;max-width:450px;}
+.alogo{font-family:'Bebas Neue',sans-serif;font-size:3.9rem;letter-spacing:.05em;text-align:center;line-height:1;color:var(--cream);text-shadow:0 0 80px rgba(245,158,11,.22);margin-bottom:5px;}
+.alogo span{color:var(--amber);}
+.atag{text-align:center;color:var(--muted2);font-size:.8rem;margin-bottom:26px;letter-spacing:.04em;}
+.acard{background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:24px;}
+.atabs{display:flex;background:rgba(255,175,45,.04);border-radius:11px;padding:4px;margin-bottom:20px;gap:4px;}
+.atab{flex:1;padding:9px;border:none;background:none;cursor:pointer;color:var(--muted2);font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;border-radius:8px;transition:all .2s;}
+.atab.on{background:var(--s2);color:var(--cream);}
+.aform{display:none;}
+.aform.on{display:block;animation:fadeUp .2s ease both;}
+.afoot{text-align:center;margin-top:12px;font-size:.79rem;color:var(--muted2);}
+.afoot a{color:var(--amber);cursor:pointer;font-weight:700;}
+.afoot a:hover{text-decoration:underline;}
+.gbox{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:14px 15px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.gbox-t{flex:1;font-size:.79rem;color:var(--warm);}
+.gbox-t strong{color:var(--amber);display:block;font-size:.91rem;margin-bottom:2px;}
+/* PUB PICKER */
+.pub-scroll{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.pub-scroll::-webkit-scrollbar{width:3px;}.pub-scroll::-webkit-scrollbar-thumb{background:rgba(245,158,11,.18);border-radius:2px;}
+.popt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--bdr);cursor:pointer;transition:all .18s;background:rgba(255,175,45,.02);}
+.popt:hover{border-color:var(--bdr2);}
+.popt.sel{border-color:var(--amber);background:rgba(245,158,11,.07);}
+.popt-ico{font-size:1.2rem;flex-shrink:0;}
+.popt-inf{flex:1;min-width:0;}
+.popt-name{font-weight:800;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.popt-loc{font-size:.69rem;color:var(--muted2);}
+.popt-chk{width:19px;height:19px;border-radius:50%;border:2px solid var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.6rem;}
+.popt.sel .popt-chk{background:var(--amber);border-color:var(--amber);color:#110800;}
+.npub-row{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;margin-top:7px;}
+.npub-row input{font-size:.83rem;padding:9px 11px;}
+/* DASHBOARD */
+.wrap{max-width:900px;margin:0 auto;padding:24px 18px 60px;}
+.hero{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;margin-bottom:28px;padding:24px 28px;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-45px;right:-45px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.08),transparent 70%);pointer-events:none;}
+.hero-hi{font-size:.67rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:700;margin-bottom:3px;}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;color:var(--cream);line-height:1;}
+.hero-name span{color:var(--amber);}
+.hero-tags{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.htag{display:flex;align-items:center;gap:6px;background:rgba(255,175,45,.06);border:1px solid var(--bdr);border-radius:100px;padding:4px 12px;font-size:.76rem;}
+.stats{display:flex;gap:18px;flex-wrap:wrap;}
+.stat{text-align:center;min-width:56px;}
+.stv{font-family:'Bebas Neue',sans-serif;font-size:1.85rem;letter-spacing:.04em;color:var(--amber);}
+.stl{font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);}
+.upgbar{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(180,60,0,.07));border:1px solid rgba(245,158,11,.22);border-radius:15px;padding:17px 21px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.upgbar-t{flex:1;font-size:.81rem;color:var(--muted2);line-height:1.5;}
+.upgbar-t strong{color:var(--amber);display:block;font-size:.95rem;margin-bottom:3px;}
+.sh{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--cream);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sh::after{content:'';flex:1;height:1px;background:var(--bdr);}
+.ggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;}
+@media(max-width:540px){.ggrid{grid-template-columns:1fr;}}
+.gc{background:var(--s1);border:1px solid var(--bdr);border-radius:17px;padding:21px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.gc::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;background:radial-gradient(circle at 20% 20%,rgba(245,158,11,.05),transparent 60%);}
+.gc:hover{transform:translateY(-3px);border-color:var(--bdr2);}
+.gc:hover::after{opacity:1;}
+.gc-ico{font-size:1.85rem;margin-bottom:10px;display:block;}
+.gc-tit{font-family:'Bebas Neue',sans-serif;font-size:1.28rem;letter-spacing:.04em;color:var(--cream);margin-bottom:4px;}
+.gc-dsc{font-size:.75rem;color:var(--muted2);line-height:1.5;margin-bottom:10px;}
+.gc-ft{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+/* LEADERBOARD */
+.lbtabs{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;}
+.lbtab{padding:8px 15px;border-radius:100px;border:1px solid var(--bdr);font-size:.77rem;font-weight:800;cursor:pointer;transition:all .2s;background:none;color:var(--muted2);letter-spacing:.04em;}
+.lbtab.on{background:var(--amber);border-color:var(--amber);color:#110800;}
+.lbtbl{width:100%;border-collapse:separate;border-spacing:0 6px;}
+.lbtbl thead th{font-size:.61rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:0 14px 3px;text-align:left;font-weight:700;}
+.lbtbl thead th:last-child{text-align:right;}
+.lbrow{background:var(--s1);transition:background .15s;animation:sl .3s ease both;}
+.lbrow:hover{background:var(--s2);}
+.lbrow td{padding:11px 14px;}
+.lbrow td:first-child{border-radius:12px 0 0 12px;}
+.lbrow td:last-child{border-radius:0 12px 12px 0;text-align:right;}
+.lbrow.me td:first-child{border-left:2px solid var(--amber);}
+.lbrk{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:28px;}
+.lbrk.r1{color:#fbbf24;}.lbrk.r2{color:#94a3b8;}.lbrk.r3{color:#cd7f32;}
+.lbnm{font-weight:800;font-size:.9rem;color:var(--cream);}
+.lbsb{font-size:.71rem;color:var(--muted2);margin-top:2px;}
+.lbsc{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--amber);}
+.lbmt{font-size:.74rem;color:var(--muted2);}
+.pbflt{display:flex;gap:9px;margin-bottom:17px;align-items:center;flex-wrap:wrap;}
+.pbflt label{margin:0;white-space:nowrap;font-size:.74rem;}
+.pbflt select{max-width:210px;width:auto;}
+.lbnote{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.17);border-radius:12px;padding:11px 16px;margin-bottom:14px;font-size:.8rem;color:var(--muted2);}
+.lbnote strong{color:var(--amber);}
+/* SETUP MODAL */
+.msel{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
+.mopt{padding:14px;border-radius:13px;border:1.5px solid var(--bdr);cursor:pointer;transition:all .2s;text-align:center;background:rgba(255,175,45,.02);}
+.mopt:hover{border-color:var(--bdr2);}
+.mopt.on{border-color:var(--amber);background:rgba(245,158,11,.07);}
+.mopt-ico{font-size:1.45rem;display:block;margin-bottom:7px;}
+.mopt-l{font-weight:800;font-size:.86rem;color:var(--cream);}
+.mopt-s{font-size:.69rem;color:var(--muted2);margin-top:3px;}
+.prows{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.prow{display:flex;gap:8px;align-items:center;animation:sl .22s ease both;}
+.pnum{width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:var(--muted2);flex-shrink:0;}
+.rmp{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.93rem;padding:4px;transition:color .15s;}
+.rmp:hover{color:var(--red);}
+.addp{width:100%;background:none;border:1px dashed rgba(245,158,11,.18);border-radius:10px;padding:8px;color:var(--muted2);font-family:'Nunito',sans-serif;font-size:.79rem;cursor:pointer;transition:all .2s;margin-bottom:16px;}
+.addp:hover{border-color:var(--amber);color:var(--amber);}
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px;}
+/* PROGRESS + STRIP */
+.prog{height:3px;background:rgba(245,158,11,.1);}
+.progf{height:100%;background:linear-gradient(90deg,var(--amber),var(--amber2));transition:width .6s ease;}
+.strip{display:flex;gap:7px;flex-wrap:wrap;padding:10px 19px;border-bottom:1px solid var(--bdr);background:var(--s1);}
+.chip{display:flex;align-items:center;gap:6px;background:rgba(255,175,45,.04);border:1px solid var(--bdr);border-radius:100px;padding:4px 11px;font-size:.78rem;transition:all .25s;}
+.chip.on{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);}
+.chip .cn{font-weight:800;color:var(--cream);}
+.chip .cs{color:var(--muted2);font-size:.7rem;}
+.chip.on .cs{color:var(--amber);opacity:.8;}
+/* GAME AREA */
+.ga{max-width:780px;margin:0 auto;padding:18px 18px 56px;}
+.qhdr{display:flex;align-items:center;justify-content:space-between;margin:15px 0 11px;flex-wrap:wrap;gap:8px;}
+.qmeta{display:flex;flex-direction:column;gap:2px;}
+.qcat{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;}
+.qnum{font-size:.77rem;color:var(--muted2);}
+.who{display:flex;align-items:center;gap:8px;background:rgba(255,175,45,.05);border:1px solid var(--bdr);border-radius:100px;padding:5px 13px;}
+.who-av{width:23px;height:23px;border-radius:50%;background:var(--amber);color:#110800;font-weight:900;font-size:.69rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.who-nm{font-size:.79rem;font-weight:800;color:var(--cream);}
+.tmr{display:flex;align-items:center;background:rgba(255,175,45,.05);border:1px solid var(--bdr);border-radius:10px;padding:5px 12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em;transition:color .3s,border-color .3s;min-width:50px;justify-content:center;}
+.tmr.warn{color:var(--amber);border-color:rgba(245,158,11,.3);}
+.tmr.danger{color:var(--red);border-color:rgba(239,68,68,.35);}
+.qcard{background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:27px;margin-bottom:13px;}
+.qtxt{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.2rem,3.3vw,1.75rem);letter-spacing:.02em;line-height:1.35;color:var(--cream);margin-bottom:20px;}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+@media(max-width:500px){.agrid{grid-template-columns:1fr;}}
+.abtn{background:rgba(255,175,45,.03);border:1.5px solid rgba(255,175,45,.08);border-radius:12px;padding:13px 14px;color:var(--cream);font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .18s;}
+.abtn:hover:not(:disabled){border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.06);transform:translateY(-1px);}
+.abtn:disabled{cursor:default;}
+.altr{width:26px;height:26px;border-radius:7px;background:rgba(255,175,45,.07);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;flex-shrink:0;transition:all .2s;}
+.abtn.correct{background:rgba(34,197,94,.1);border-color:var(--grn);}
+.abtn.correct .altr{background:var(--grn);color:#110800;}
+.abtn.wrong{background:rgba(239,68,68,.1);border-color:var(--red);}
+.abtn.wrong .altr{background:var(--red);color:#fff;}
+.abtn.reveal{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.28);}
+.fb{border-radius:13px;padding:13px 17px;display:none;align-items:flex-start;gap:10px;margin-bottom:11px;flex-wrap:wrap;}
+.fb.on{display:flex;}
+.fb.ok{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);}
+.fb.bad{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.fb-ico{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
+.fb-body{flex:1;min-width:155px;font-size:.84rem;line-height:1.5;color:var(--warm);}
+.fb-body strong{color:var(--amber);}
+.fb-nxt{background:rgba(255,175,45,.08);border:1px solid rgba(255,175,45,.15);border-radius:9px;padding:7px 16px;color:var(--cream);font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;transition:all .2s;flex-shrink:0;align-self:center;}
+.fb-nxt:hover{background:rgba(245,158,11,.16);}
+/* RIDDLES */
+.rcard{background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:32px 24px;margin-bottom:13px;text-align:center;}
+.rico{font-size:2.5rem;margin-bottom:12px;display:block;}
+.rq{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.2rem,3.3vw,1.85rem);letter-spacing:.02em;line-height:1.35;color:var(--cream);margin-bottom:24px;}
+.rir{display:flex;gap:8px;max-width:360px;margin:0 auto 13px;}
+.rir input{flex:1;}
+.hbtn{background:none;border:1px solid rgba(96,165,250,.24);border-radius:8px;padding:5px 14px;color:var(--blue);font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:800;cursor:pointer;transition:all .2s;}
+.hbtn:hover{background:rgba(96,165,250,.08);}
+.htxt{margin-top:8px;font-size:.82rem;color:var(--muted2);font-style:italic;display:none;background:rgba(96,165,250,.06);border-radius:9px;padding:8px 13px;}
+.htxt.on{display:block;}
+/* SIX NATIONS */
+.snh{text-align:center;padding:24px 16px 18px;}
+.snt{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,6.5vw,3.6rem);letter-spacing:.04em;color:var(--cream);margin-bottom:5px;}
+.snt span{color:var(--red);}
+.sns{color:var(--muted2);font-size:.82rem;margin-bottom:14px;}
+.snptabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.snptab{padding:7px 15px;border-radius:100px;border:1px solid var(--bdr);font-size:.79rem;font-weight:800;cursor:pointer;transition:all .2s;background:none;color:var(--muted2);}
+.snptab.on{background:var(--red);border-color:var(--red);color:#fff;}
+.rlbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:700;margin:17px 0 8px 3px;}
+.fix{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px 17px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px;transition:border-color .2s;}
+.fix.done{border-color:rgba(34,197,94,.2);}
+.ts{flex:1;min-width:78px;display:flex;align-items:center;gap:7px;}
+.ts.aw{flex-direction:row-reverse;text-align:right;}
+.tflag{font-size:1.45rem;flex-shrink:0;}
+.tname{font-weight:800;font-size:.84rem;}
+.vsm{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;}
+.vsl{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:.1em;color:var(--muted);}
+.pbs{display:flex;gap:4px;}
+.pb{padding:5px 8px;border-radius:7px;border:1.5px solid var(--bdr);font-size:.69rem;font-weight:800;cursor:pointer;transition:all .18s;background:none;color:var(--muted2);}
+.pb:hover{border-color:rgba(245,158,11,.28);color:var(--cream);}
+.pb.ph{background:rgba(34,197,94,.12);border-color:var(--grn);color:var(--grn);}
+.pb.pd{background:rgba(245,158,11,.12);border-color:var(--amber);color:var(--amber);}
+.pb.pa{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red);}
+/* PROFILE SIDE PANEL */
+.ppanel{display:none;position:fixed;top:0;right:0;height:100vh;width:100%;max-width:340px;background:var(--s1);border-left:1px solid var(--bdr);z-index:300;flex-direction:column;overflow-y:auto;animation:slr .25s ease both;}
+.ppanel.on{display:flex;}
+.pbd{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:299;}
+.pbd.on{display:block;}
+.pp-hd{padding:20px 18px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:13px;}
+.pp-av{width:48px;height:48px;border-radius:50%;background:var(--amber);color:#110800;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pp-info{flex:1;}
+.pp-name{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em;color:var(--cream);line-height:1;}
+.pp-tag{font-size:.73rem;color:var(--muted2);margin-top:3px;}
+.pp-x{background:none;border:none;color:var(--muted2);font-size:1.2rem;cursor:pointer;padding:4px;margin-left:auto;}
+.pp-body{padding:18px;flex:1;}
+.pp-sec{margin-bottom:20px;}
+.pp-sec-l{font-size:.63rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:700;margin-bottom:10px;}
+.pp-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:.85rem;}
+.pp-row:last-child{border-bottom:none;}
+.pp-k{color:var(--muted2);}
+.pp-v{font-weight:700;color:var(--cream);}
+.pp-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.pp-stat{background:var(--s2);border-radius:11px;padding:12px;text-align:center;}
+.pp-stat-v{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--amber);}
+.pp-stat-l{font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);}
+.pp-edit-row{display:flex;gap:7px;margin-top:9px;}
+.pp-edit-row input{flex:1;font-size:.84rem;padding:8px 11px;}
+/* RESULTS */
+.rarea{max-width:620px;margin:0 auto;padding:34px 18px 56px;text-align:center;}
+.rico2{font-size:3.7rem;margin-bottom:7px;display:block;animation:pop .5s ease both;}
+.rtit{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,6.5vw,4rem);letter-spacing:.04em;color:var(--cream);margin-bottom:4px;}
+.rwin{color:var(--amber);}
+.rsub{color:var(--muted2);font-size:.85rem;margin-bottom:28px;}
+.pod{display:flex;align-items:flex-end;justify-content:center;gap:9px;margin-bottom:30px;}
+.pc{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:140px;}
+.pc-em{font-size:1.6rem;}
+.pc-nm{font-weight:800;font-size:.83rem;word-break:break-word;text-align:center;color:var(--cream);}
+.pc-pts{font-size:.71rem;color:var(--muted2);}
+.pc-blk{width:100%;border-radius:9px 9px 0 0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:.04em;}
+.pc:nth-child(1) .pc-blk{height:70px;background:linear-gradient(180deg,#94a3b8,#475569);color:#e2e8f0;}
+.pc:nth-child(2) .pc-blk{height:108px;background:linear-gradient(180deg,#fbbf24,#d97706);color:#1c1008;}
+.pc:nth-child(3) .pc-blk{height:50px;background:linear-gradient(180deg,#cd7f32,#8B4513);color:#ffd4a0;}
+.fsb{display:flex;flex-direction:column;gap:8px;margin-bottom:26px;text-align:left;}
+.sbr{background:var(--s1);border:1px solid var(--bdr);border-radius:13px;padding:11px 16px;display:flex;align-items:center;gap:12px;animation:fadeUp .4s ease both;}
+.sbr:first-child{border-color:rgba(245,158,11,.3);}
+.sbrk{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--muted);width:19px;}
+.sbr:first-child .sbrk{color:var(--amber);}
+.sbnm{flex:1;font-weight:800;color:var(--cream);}
+.sbsc{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--amber);}
+.sbpc{font-size:.69rem;color:var(--muted2);}
+.ract{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.nudge{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(180,60,0,.07));border:1px solid rgba(245,158,11,.22);border-radius:14px;padding:16px 19px;margin-bottom:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;}
+.nudge-t{flex:1;font-size:.79rem;color:var(--muted2);line-height:1.5;}
+.nudge-t strong{color:var(--amber);display:block;margin-bottom:3px;}
+/* EMPTY + CONFETTI */
+.empty{text-align:center;padding:38px 18px;color:var(--muted2);}
+.empty span{font-size:2.7rem;margin-bottom:10px;display:block;}
+.empty p{font-size:.85rem;line-height:1.6;}
+.cfp{position:fixed;pointer-events:none;z-index:999;}
+@keyframes cffall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="pbd" id="panelBd" onclick="closeProfile()"></div>
+
+<!-- PROFILE SIDE PANEL -->
+<div class="ppanel" id="profilePanel">
+  <div class="pp-hd">
+    <div class="pp-av" id="ppAv">?</div>
+    <div class="pp-info">
+      <div class="pp-name" id="ppName">—</div>
+      <div class="pp-tag" id="ppTag">—</div>
+    </div>
+    <button class="pp-x" onclick="closeProfile()">✕</button>
+  </div>
+  <div class="pp-body">
+    <div class="pp-sec">
+      <div class="pp-sec-l">Your Stats</div>
+      <div class="pp-stats">
+        <div class="pp-stat"><div class="pp-stat-v" id="ppGames">0</div><div class="pp-stat-l">Games</div></div>
+        <div class="pp-stat"><div class="pp-stat-v" id="ppPts">0</div><div class="pp-stat-l">Points</div></div>
+        <div class="pp-stat"><div class="pp-stat-v" id="ppBest">—</div><div class="pp-stat-l">Best</div></div>
+      </div>
+    </div>
+    <div class="pp-sec">
+      <div class="pp-sec-l">Account</div>
+      <div class="pp-row"><span class="pp-k">Pub</span><span class="pp-v" id="ppPub">—</span></div>
+      <div class="pp-row"><span class="pp-k">Team</span><span class="pp-v" id="ppTeam">—</span></div>
+      <div class="pp-row"><span class="pp-k">Username</span><span class="pp-v" id="ppUser">—</span></div>
+    </div>
+    <div class="pp-sec" id="ppEditSec">
+      <div class="pp-sec-l">Update Team Name</div>
+      <div class="pp-edit-row">
+        <input type="text" id="ppTeamInput" placeholder="Team name…">
+        <button class="btn bam bsm" onclick="saveTeamName()" style="font-size:.85rem;padding:8px 14px">Save</button>
+      </div>
+    </div>
+    <div class="pp-sec" id="ppGuestSec" style="display:none">
+      <div class="al al-info on" style="margin-bottom:12px">Playing as guest — scores not saved</div>
+      <button class="btn bam bw100" onclick="closeProfile();promptUpgrade()">Create Account &amp; Save Scores →</button>
+    </div>
+    <div class="divd"></div>
+    <button class="btn bgh bw100" onclick="logout()" id="ppLogout">Sign Out</button>
+  </div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="fscreen" id="authScreen">
+  <div class="awrap">
+    <div class="alogo">THE <span>PUB</span><br>GAMES</div>
+    <div class="atag">🍺 Compete, climb the leaderboard &amp; challenge other pubs</div>
+    <div class="acard">
+      <div class="atabs">
+        <button class="atab on" onclick="authTab('login')">Sign In</button>
+        <button class="atab" onclick="authTab('register')">Create Account</button>
+      </div>
+      <!-- LOGIN -->
+      <div class="aform on" id="loginForm">
+        <div class="al al-err" id="loginErr"></div>
+        <div class="fg"><label>Username</label><input type="text" id="liUser" placeholder="your username" autocomplete="username"></div>
+        <div class="fg"><label>Password</label><input type="password" id="liPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn bam bw100" onclick="doLogin()">Sign In →</button>
+        <div class="afoot">No account? <a onclick="authTab('register')">Create one free</a></div>
+        <div class="divd"></div>
+        <div class="gbox">
+          <div style="font-size:1.7rem">🎮</div>
+          <div class="gbox-t"><strong>Just browsing?</strong>Play as a guest now — you can create a full account at any time to save your scores.</div>
+          <button class="btn bgh bsm" onclick="guestMode()">Play as Guest</button>
+        </div>
+      </div>
+      <!-- REGISTER -->
+      <div class="aform" id="regForm">
+        <div class="al al-err" id="regErr"></div>
+        <div class="al al-ok" id="regOk"></div>
+        <div class="fg2">
+          <div><label>Username</label><input type="text" id="ruUser" placeholder="choose a username"></div>
+          <div><label>Display Name</label><input type="text" id="ruDisp" placeholder="your name"></div>
+        </div>
+        <div class="fg"><label>Password</label><input type="password" id="ruPass" placeholder="at least 6 characters"></div>
+        <div class="fg"><label>Team Name <span style="color:var(--muted);font-weight:400;text-transform:none;font-size:.73rem">(optional)</span></label><input type="text" id="ruTeam" placeholder="e.g. The Brainbusters"></div>
+        <div class="fg">
+          <label>Your Pub — pick one or add your own below</label>
+          <div class="pub-scroll" id="regPubList"></div>
+          <div class="npub-row">
+            <input type="text" id="regPubName" placeholder="New pub name…">
+            <input type="text" id="regPubLoc" placeholder="Town / City">
+            <button class="btn bgh bsm" onclick="addPub('reg')">+ Add</button>
+          </div>
+        </div>
+        <button class="btn bam bw100" onclick="doRegister()">Create Account →</button>
+        <div class="afoot">Already have an account? <a onclick="authTab('login')">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div class="screen" id="homeScreen">
+  <nav class="tnav">
+    <div class="nlogo" onclick="go('homeScreen')">THE <span>PUB</span> GAMES</div>
+    <div class="nr">
+      <button class="nbtn" onclick="openLb()">🏆 Leaderboard</button>
+      <div class="nuser" id="navUser" onclick="openProfile()">
+        <div class="nav" id="navAv">?</div>
+        <span id="navName">Guest</span>
+        <span style="color:var(--muted2);font-size:.73rem">▾</span>
+      </div>
+    </div>
+  </nav>
+  <div class="wrap">
+    <div class="upgbar" id="guestBar" style="display:none">
+      <div style="font-size:1.75rem">⭐</div>
+      <div class="upgbar-t"><strong>You're playing as a guest</strong>Create a free account to save scores, join the leaderboard &amp; compete with other pubs.</div>
+      <button class="btn bam" style="font-size:.95rem;padding:9px 18px" onclick="promptUpgrade()">Create Account</button>
+    </div>
+    <div class="hero">
+      <div>
+        <div class="hero-hi">Welcome back,</div>
+        <div class="hero-name"><span id="heroName">Player</span></div>
+        <div class="hero-tags">
+          <div class="htag">🍺 <span id="heroPub">No pub set</span></div>
+          <div class="htag" id="heroTeamTag" style="display:none">👥 <span id="heroTeam"></span></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stv" id="stGames">0</div><div class="stl">Games</div></div>
+        <div class="stat"><div class="stv" id="stPts">0</div><div class="stl">Points</div></div>
+        <div class="stat"><div class="stv" id="stBest">—</div><div class="stl">Best%</div></div>
+      </div>
+    </div>
+    <div class="sh">Pick a Game</div>
+    <div class="ggrid">
+      <div class="gc" onclick="openSetup('quiz')"><span class="gc-ico">🧠</span><div class="gc-tit">General Knowledge</div><div class="gc-dsc">History, science, geography, pop culture and more — the classic pub quiz.</div><div class="gc-ft"><span class="badge bam-b">Quiz</span><span style="font-size:.73rem;color:var(--muted2)">up to 20 Qs</span></div></div>
+      <div class="gc" onclick="openSetup('riddles')"><span class="gc-ico">🔵</span><div class="gc-tit">Riddles</div><div class="gc-dsc">Lateral thinking puzzles — type your answer, fuzzy matching counts.</div><div class="gc-ft"><span class="badge bblu-b">Think</span><span style="font-size:.73rem;color:var(--muted2)">15 riddles</span></div></div>
+      <div class="gc" onclick="openSetup('sports')"><span class="gc-ico">⚽</span><div class="gc-tit">Sports Quiz</div><div class="gc-dsc">Football, rugby, tennis, F1, athletics. Settle who the real fan is.</div><div class="gc-ft"><span class="badge bgrn-b">Sport</span><span style="font-size:.73rem;color:var(--muted2)">up to 20 Qs</span></div></div>
+      <div class="gc" onclick="openSetup('sixnations')"><span class="gc-ico">🏉</span><div class="gc-tit">Six Nations Predictor</div><div class="gc-dsc">Predict every fixture — 10 pts per correct result across the tournament.</div><div class="gc-ft"><span class="badge bred-b">Rugby</span><span style="font-size:.73rem;color:var(--muted2)">15 fixtures</span></div></div>
+    </div>
+    <div class="sh">Recent Games</div>
+    <div id="recentGames"></div>
+  </div>
+</div>
+
+<!-- LEADERBOARD SCREEN -->
+<div class="screen" id="lbScreen">
+  <nav class="tnav">
+    <div class="nlogo" onclick="go('homeScreen')">THE <span>PUB</span> GAMES</div>
+    <div class="nr"><div class="nmode">LEADERBOARDS</div><button class="nbtn" onclick="go('homeScreen')">← Home</button></div>
+  </nav>
+  <div class="wrap" style="max-width:820px">
+    <div class="lbtabs">
+      <button class="lbtab on" onclick="lbTab('global',this)">🌍 Global</button>
+      <button class="lbtab" onclick="lbTab('pub',this)">🍺 By Pub</button>
+      <button class="lbtab" onclick="lbTab('team',this)">👥 Teams</button>
+      <button class="lbtab" onclick="lbTab('interpub',this)">🏆 Inter-Pub</button>
+    </div>
+    <div class="pbflt" id="pubFlt" style="display:none">
+      <label>Filter:</label>
+      <select id="pubFltSel" onchange="renderLb(curLbTab)"></select>
+    </div>
+    <div id="lbContent"></div>
+  </div>
+</div>
+
+<!-- SETUP MODAL -->
+<div class="ov" id="setupOv">
+  <div class="modal">
+    <div class="mhd">
+      <div><div class="mtit" id="setupTit">General Knowledge</div><div class="msub">Choose mode and settings, then start</div></div>
+      <button class="mx" onclick="closeSetup()">✕</button>
+    </div>
+    <div class="mbd">
+      <label style="margin-bottom:9px">Game Mode</label>
+      <div class="msel">
+        <div class="mopt on" data-m="solo" onclick="pickMode('solo')"><span class="mopt-ico">🧑</span><div class="mopt-l">Solo</div><div class="mopt-s">Just you · score saved</div></div>
+        <div class="mopt" data-m="versus" onclick="pickMode('versus')"><span class="mopt-ico">⚔️</span><div class="mopt-l">Versus</div><div class="mopt-s">2–8 players · take turns</div></div>
+      </div>
+      <label>Players</label>
+      <div class="prows" id="setupPRows"></div>
+      <button class="addp" id="addPBtn" onclick="addSP()" style="display:none">+ Add player</button>
+      <div class="srow" id="setupSettings">
+        <div><label>Questions</label><select id="qcnt"><option value="5">5 — Quick</option><option value="10" selected>10 — Classic</option><option value="15">15 — Long</option><option value="20">20 — Epic</option></select></div>
+        <div><label>Timer</label><select id="tmrsel"><option value="0">No timer</option><option value="15">15 sec</option><option value="20" selected>20 sec</option><option value="30">30 sec</option></select></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn bgh" style="flex:1" onclick="closeSetup()">Cancel</button>
+        <button class="btn bam" style="flex:2" onclick="startGame()">Start Game →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE / CREATE ACCOUNT MODAL (from guest) -->
+<div class="ov" id="upgradeOv">
+  <div class="modal">
+    <div class="mhd">
+      <div><div class="mtit">Create Your Account</div><div class="msub">Your guest progress &amp; scores will be carried over</div></div>
+      <button class="mx" onclick="closeUpgrade()">✕</button>
+    </div>
+    <div class="mbd">
+      <div class="al al-err" id="upErr"></div>
+      <div class="al al-ok" id="upOk"></div>
+      <div class="fg2">
+        <div><label>Username</label><input type="text" id="upUser" placeholder="choose a username"></div>
+        <div><label>Display Name</label><input type="text" id="upDisp" placeholder="your name"></div>
+      </div>
+      <div class="fg"><label>Password</label><input type="password" id="upPass" placeholder="at least 6 characters"></div>
+      <div class="fg"><label>Team Name <span style="color:var(--muted);font-weight:400;text-transform:none;font-size:.73rem">(optional)</span></label><input type="text" id="upTeam" placeholder="e.g. The Brainbusters"></div>
+      <div class="fg">
+        <label>Your Pub</label>
+        <div class="pub-scroll" id="upPubList"></div>
+        <div class="npub-row">
+          <input type="text" id="upPubName" placeholder="New pub name…">
+          <input type="text" id="upPubLoc" placeholder="Town / City">
+          <button class="btn bgh bsm" onclick="addPub('up')">+ Add</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn bgh" style="flex:1" onclick="closeUpgrade()">Maybe later</button>
+        <button class="btn bam" style="flex:2" onclick="doUpgrade()">Create &amp; Save Scores →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen" id="quizScreen">
+  <nav class="tnav">
+    <div class="nlogo" onclick="confirmQuit()">THE <span>PUB</span> GAMES</div>
+    <div class="nr"><div class="nmode" id="qmode">GENERAL KNOWLEDGE</div><button class="nbtn" onclick="confirmQuit()">✕ Quit</button></div>
+  </nav>
+  <div class="prog"><div class="progf" id="progf"></div></div>
+  <div class="strip" id="strip"></div>
+  <div class="ga">
+    <div class="qhdr">
+      <div class="qmeta"><span class="qcat" id="qcat"></span><span class="qnum" id="qnum"></span></div>
+      <div class="who" id="who"><div class="who-av" id="whoav"></div><div class="who-nm" id="whonm"></div></div>
+      <div class="tmr" id="tmr" style="display:none"><span id="tmrn">20</span></div>
+    </div>
+    <div class="qcard"><div class="qtxt" id="qtxt"></div><div class="agrid" id="agrid"></div></div>
+    <div class="fb" id="fb"><span class="fb-ico" id="fbico"></span><div class="fb-body" id="fbbody"></div><button class="fb-nxt" onclick="nextQ()">Next →</button></div>
+  </div>
+</div>
+
+<!-- RIDDLES SCREEN -->
+<div class="screen" id="riddlesScreen">
+  <nav class="tnav">
+    <div class="nlogo" onclick="confirmQuit()">THE <span>PUB</span> GAMES</div>
+    <div class="nr"><div class="nmode">RIDDLES</div><button class="nbtn" onclick="confirmQuit()">✕ Quit</button></div>
+  </nav>
+  <div class="strip" id="rstrip"></div>
+  <div class="ga">
+    <div class="qhdr">
+      <div class="qmeta"><span class="qcat" style="color:var(--blue)">🔵 Riddle</span><span class="qnum" id="rnum"></span></div>
+      <div class="who" id="rwho"><div class="who-av" id="rwhoav" style="background:var(--blue)"></div><div class="who-nm" id="rwhonm"></div></div>
+    </div>
+    <div class="rcard">
+      <span class="rico" id="rico">🤔</span>
+      <div class="rq" id="rq"></div>
+      <div class="rir"><input type="text" id="rinput" placeholder="Your answer…" onkeydown="if(event.key==='Enter')checkRiddle()"><button class="btn bblu bsm" onclick="checkRiddle()" style="font-size:1rem">Submit</button></div>
+      <button class="hbtn" onclick="showHint()">💡 Hint?</button>
+      <div class="htxt" id="htxt"></div>
+    </div>
+    <div class="fb" id="rfb"><span class="fb-ico" id="rfbico"></span><div class="fb-body" id="rfbbody"></div><button class="fb-nxt" onclick="nextRiddle()">Next →</button></div>
+  </div>
+</div>
+
+<!-- SIX NATIONS SCREEN -->
+<div class="screen" id="snScreen">
+  <nav class="tnav">
+    <div class="nlogo" onclick="go('homeScreen')">THE <span>PUB</span> GAMES</div>
+    <div class="nr"><div class="nmode">SIX NATIONS</div><button class="nbtn" onclick="go('homeScreen')">← Home</button></div>
+  </nav>
+  <div class="ga">
+    <div class="snh"><h2 class="snt">SIX <span>NATIONS</span> PREDICTOR</h2><p class="sns">Each player predicts every match · 10 pts for correct result · most points wins</p></div>
+    <div class="snptabs" id="snTabs"></div>
+    <div id="snFix"></div>
+    <div style="text-align:center;padding:18px 0 40px"><button class="btn bred" onclick="snSubmit()" style="font-size:1.2rem;padding:14px 40px">Lock In Predictions 🏉</button></div>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="resultsScreen">
+  <nav class="tnav">
+    <div class="nlogo" onclick="go('homeScreen')">THE <span>PUB</span> GAMES</div>
+    <div class="nr"><div class="nmode">RESULTS</div><button class="nbtn" onclick="go('homeScreen')">← Home</button></div>
+  </nav>
+  <div class="rarea">
+    <span class="rico2" id="rico2">🏆</span>
+    <h1 class="rtit"><span class="rwin" id="rwin"></span> Wins!</h1>
+    <p class="rsub" id="rsub"></p>
+    <div class="nudge" id="guestNudge" style="display:none">
+      <div style="font-size:1.4rem">💾</div>
+      <div class="nudge-t"><strong>Save your score!</strong>Create a free account to appear on the leaderboard and track your progress.</div>
+      <button class="btn bam" style="font-size:.9rem;padding:9px 16px" onclick="promptUpgrade()">Save Score</button>
+    </div>
+    <div class="pod" id="pod"></div>
+    <div class="fsb" id="fsb"></div>
+    <div class="ract">
+      <button class="btn bam" onclick="rematch()">🔄 Rematch</button>
+      <button class="btn bgh" onclick="go('homeScreen')">🏠 Home</button>
+    </div>
+  </div>
+</div>
+<script>
+// ═══════════════════════════════ STORAGE ════════════════════════════════
+const DB={
+  g:k=>{try{const v=localStorage.getItem('pg_'+k);return v?JSON.parse(v):null}catch(e){return null}},
+  s:function(k,v){try{localStorage.setItem('pg_'+k,JSON.stringify(v))}catch(e){}},
+  users(){return this.g('users')||{}},
+  setUsers(u){this.s('users',u)},
+  pubs(){
+    return this.g('pubs')||[
+      {id:'p1',name:"Cork & Cavan",loc:"Ireland"},
+      {id:'p2',name:"O'Sullivans",loc:"Ireland"},
+      {id:'p3',name:"Ma Nolans Vieux Nice",loc:"Nice, France"},
+      {id:'p4',name:"Ma Nolans Port",loc:"Port, France"}
+    ]
+  },
+  setPubs(p){this.s('pubs',p)},
+  me(){return this.g('me')},
+  setMe(u){this.s('me',u)},
+  saveUser(u){
+    if(u.username==='guest'){this.setMe(u);return}
+    const users=this.users();users[u.username]=u;
+    this.setUsers(users);this.setMe(u)
+  }
+};
+
+// ═══════════════════════════════ DATA BANKS ═════════════════════════════
+const GK=[
+  {q:"What is the capital of Australia?",a:["Sydney","Melbourne","Canberra","Brisbane"],c:2,cat:"Geography",f:"Canberra was purpose-built as the capital in 1913, chosen as a compromise between Sydney and Melbourne."},
+  {q:"How many bones are in the adult human body?",a:["196","206","215","224"],c:1,cat:"Science",f:"Babies are born with around 270 bones, which fuse together as they grow."},
+  {q:"Who wrote Romeo and Juliet?",a:["Charles Dickens","Jane Austen","William Shakespeare","Oscar Wilde"],c:2,cat:"Literature",f:"Shakespeare wrote it around 1594–96. It remains one of the most performed plays in the world."},
+  {q:"What is the chemical symbol for gold?",a:["Go","Gd","Au","Ag"],c:2,cat:"Science",f:"Au comes from the Latin word Aurum, meaning gold."},
+  {q:"In which year did the Berlin Wall fall?",a:["1987","1988","1989","1991"],c:2,cat:"History",f:"November 9, 1989 — a defining night that signalled the end of the Cold War."},
+  {q:"Which planet is closest to the Sun?",a:["Venus","Earth","Mars","Mercury"],c:3,cat:"Science",f:"Mercury completes an orbit around the Sun in just 88 Earth days."},
+  {q:"What currency is used in Japan?",a:["Yuan","Won","Ringgit","Yen"],c:3,cat:"Geography",f:"The Japanese Yen has been the official currency since 1871."},
+  {q:"Who painted the Mona Lisa?",a:["Michelangelo","Raphael","Leonardo da Vinci","Caravaggio"],c:2,cat:"Art",f:"Painted circa 1503–1519. It now hangs in the Louvre in Paris."},
+  {q:"What is the longest river in the world?",a:["Amazon","Congo","Yangtze","Nile"],c:3,cat:"Geography",f:"The Nile stretches approximately 6,650 km through northeast Africa."},
+  {q:"What gas do plants absorb during photosynthesis?",a:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],c:2,cat:"Science",f:"Plants absorb CO₂ and release oxygen as a by-product of photosynthesis."},
+  {q:"Which country has the most natural lakes?",a:["Russia","Finland","USA","Canada"],c:3,cat:"Geography",f:"Canada has roughly 879,800 lakes — more than half the world's total freshwater lakes."},
+  {q:"What is the smallest country in the world?",a:["Monaco","Liechtenstein","San Marino","Vatican City"],c:3,cat:"Geography",f:"Vatican City covers just 0.44 km² within the city of Rome."},
+  {q:"Who was the first woman to win a Nobel Prize?",a:["Rosalind Franklin","Marie Curie","Dorothy Hodgkin","Lise Meitner"],c:1,cat:"History",f:"Marie Curie won it twice — Physics in 1903 and Chemistry in 1911."},
+  {q:"How many sides does a heptagon have?",a:["5","6","7","8"],c:2,cat:"Maths",f:"Hepta is the Greek word for seven."},
+  {q:"In which year was the first iPhone released?",a:["2005","2006","2007","2008"],c:2,cat:"Technology",f:"Steve Jobs unveiled the original iPhone on January 9, 2007."},
+  {q:"What is the hardest natural substance on Earth?",a:["Quartz","Titanium","Diamond","Graphene"],c:2,cat:"Science",f:"Diamond scores 10 on the Mohs hardness scale — the maximum possible."},
+  {q:"Which country is believed to have invented chess?",a:["Persia","China","India","Egypt"],c:2,cat:"History",f:"Chess originated in India around the 6th century AD, known then as Chaturanga."},
+  {q:"What is the world's most spoken language by native speakers?",a:["English","Spanish","Hindi","Mandarin Chinese"],c:3,cat:"Culture",f:"Mandarin Chinese has roughly 920 million native speakers worldwide."},
+  {q:"Who composed the Moonlight Sonata?",a:["Mozart","Bach","Chopin","Beethoven"],c:3,cat:"Music",f:"Beethoven composed Piano Sonata No. 14 (the Moonlight Sonata) in 1801."},
+  {q:"What is the square root of 144?",a:["11","12","13","14"],c:1,cat:"Maths",f:"12 × 12 = 144. Simple enough at home — harder after a few pints!"},
+];
+
+const SPORTS=[
+  {q:"How many players are on a rugby union team?",a:["13","14","15","16"],c:2,cat:"Rugby",f:"Rugby union has 15 players per side. Rugby league uses 13."},
+  {q:"In which city were the 2012 Summer Olympics held?",a:["Beijing","Athens","Rio de Janeiro","London"],c:3,cat:"Olympics",f:"London 2012 was the third time the UK hosted the Summer Games."},
+  {q:"How many Grand Slam tournaments are there in tennis?",a:["2","3","4","5"],c:2,cat:"Tennis",f:"Wimbledon, US Open, French Open, and Australian Open — four each year."},
+  {q:"Which country has won the most FIFA World Cup titles?",a:["Germany","Italy","Argentina","Brazil"],c:3,cat:"Football",f:"Brazil has won five times — 1958, 1962, 1970, 1994, and 2002."},
+  {q:"How many points does an F1 race winner receive?",a:["10","15","25","30"],c:2,cat:"Motorsport",f:"The current 25-point system for race winners was introduced in 2010."},
+  {q:"How long is an Olympic swimming pool?",a:["25m","50m","75m","100m"],c:1,cat:"Swimming",f:"Olympic pools are exactly 50 metres long, with 8 competition lanes."},
+  {q:"Which country hosted the 2019 Rugby World Cup?",a:["England","Australia","New Zealand","Japan"],c:3,cat:"Rugby",f:"Japan 2019 — South Africa beat England 32–12 in the final."},
+  {q:"How many players are in a basketball team on court?",a:["4","5","6","7"],c:1,cat:"Basketball",f:"Five per side: point guard, shooting guard, small forward, power forward, centre."},
+  {q:"What is the maximum score in a single frame of ten-pin bowling?",a:["10","20","30","300"],c:3,cat:"Bowling",f:"A perfect game requires 12 consecutive strikes, scoring 300."},
+  {q:"How many holes are there in a standard round of golf?",a:["9","12","18","24"],c:2,cat:"Golf",f:"18 holes has been the standard since St Andrews adopted it in 1764."},
+  {q:"Which nation won the first Rugby World Cup in 1987?",a:["South Africa","Australia","England","New Zealand"],c:3,cat:"Rugby",f:"New Zealand beat France 29–9 in the Auckland final."},
+  {q:"How many hurdles are there in the 110m hurdles race?",a:["8","10","12","15"],c:1,cat:"Athletics",f:"Ten hurdles, each standing 1.067m high, spaced 9.14m apart."},
+  {q:"What is a hat-trick in cricket?",a:["Scoring 3 sixes in a row","Taking 3 wickets in 3 balls","Scoring 100 runs","Dropping 3 catches"],c:1,cat:"Cricket",f:"Taking three wickets in consecutive deliveries — named after the hat a bowler would receive as a reward."},
+  {q:"How many events are in an Olympic decathlon?",a:["8","10","12","15"],c:1,cat:"Athletics",f:"Ten events over two days, combining sprints, jumps, throws and middle distance."},
+  {q:"Which club has won the most UEFA Champions League titles?",a:["Barcelona","Bayern Munich","AC Milan","Real Madrid"],c:3,cat:"Football",f:"Real Madrid hold the all-time record for Champions League titles."},
+  {q:"In which sport is the Ryder Cup contested?",a:["Tennis","Golf","Cricket","Polo"],c:1,cat:"Golf",f:"The Ryder Cup pits Europe against the USA in biennial team golf."},
+  {q:"What is the exact distance of a marathon?",a:["40km","41.195km","42.195km","43km"],c:2,cat:"Athletics",f:"42.195 km (26 miles and 385 yards) — standardised in 1921."},
+  {q:"What is the width of a standard football goal?",a:["6.4m","7.32m","8m","7m"],c:1,cat:"Football",f:"7.32m wide and 2.44m tall — standardised by FIFA."},
+  {q:"In which sport is a smash a common attacking shot?",a:["Football","Badminton","Rowing","Cycling"],c:1,cat:"Badminton",f:"A badminton smash is hit steeply downward at high speed from near the net."},
+  {q:"How many players are on court in a volleyball team?",a:["5","6","7","8"],c:1,cat:"Volleyball",f:"Six players per side, with a libero specialist for defensive play."},
+];
+
+const RIDDLES=[
+  {q:"I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",a:["echo"],hint:"You will hear me in mountains and empty halls.",icon:"🏔️",f:"An echo is sound reflected back from a surface."},
+  {q:"The more you take, the more you leave behind. What am I?",a:["footsteps","steps","footprints"],hint:"Think about walking somewhere.",icon:"👣",f:"Every step you take leaves a footstep behind you."},
+  {q:"I have cities but no houses, mountains but no trees, water but no fish, and roads but no cars. What am I?",a:["map","a map"],hint:"You can fold me and put me in your pocket.",icon:"🗺️",f:"A map represents places without actually containing them."},
+  {q:"What can travel around the world without moving from its place?",a:["stamp","a stamp","postage stamp"],hint:"You lick me and stick me on an envelope.",icon:"✉️",f:"A postage stamp travels the world attached to letters and parcels."},
+  {q:"What has hands but cannot clap?",a:["clock","a clock","watch","a watch"],hint:"You check me when you want to know the time.",icon:"⏰",f:"A clock has hands — hour, minute, and second — but cannot clap."},
+  {q:"I am as light as a feather, yet even the strongest person cannot hold me for more than five minutes. What am I?",a:["breath","your breath","air"],hint:"You do it constantly without thinking.",icon:"💨",f:"Breath — nobody can hold their breath indefinitely."},
+  {q:"What gets wetter as it dries?",a:["towel","a towel"],hint:"You use me right after a shower.",icon:"🛁",f:"A towel absorbs water as it dries you off."},
+  {q:"I have a head and a tail but no body. What am I?",a:["coin","a coin"],hint:"You might flip me to make a decision.",icon:"🪙",f:"A coin has a head side and a tail side."},
+  {q:"What goes up when the rain comes down?",a:["umbrella","an umbrella"],hint:"You open me when it starts to rain.",icon:"☔",f:"You raise an umbrella when it rains — it goes up when rain comes down."},
+  {q:"I have branches but no fruit, trunk, or leaves. What am I?",a:["bank","a bank"],hint:"You keep your money there.",icon:"🏦",f:"A bank has branch offices but nothing botanical."},
+  {q:"The more of me you have, the less you can see. What am I?",a:["darkness","dark","fog","mist"],hint:"Switch off all the lights.",icon:"🌑",f:"The more darkness there is, the less you can see."},
+  {q:"I am always in front of you but can never be seen. What am I?",a:["future","the future"],hint:"Yesterday is behind you and tomorrow is ahead.",icon:"🔮",f:"The future is always ahead of you but cannot be seen."},
+  {q:"What has to be broken before you can use it?",a:["egg","an egg"],hint:"You need me for breakfast.",icon:"🥚",f:"You must crack an egg before you can cook with it."},
+  {q:"I shave every day but my beard stays the same. What am I?",a:["barber","a barber"],hint:"I cut other people's hair for a living.",icon:"💈",f:"A barber shaves customers' faces, not their own beard."},
+  {q:"What can you catch but never throw?",a:["cold","a cold"],hint:"You might get one in winter.",icon:"🤧",f:"You catch a cold — an illness — but you cannot throw one."},
+];
+
+const SN=[
+  {r:1,h:"France",hf:"🇫🇷",a:"Wales",af:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",id:"r1a"},
+  {r:1,h:"Ireland",hf:"🇮🇪",a:"England",af:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",id:"r1b"},
+  {r:1,h:"Italy",hf:"🇮🇹",a:"Scotland",af:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",id:"r1c"},
+  {r:2,h:"Scotland",hf:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",a:"France",af:"🇫🇷",id:"r2a"},
+  {r:2,h:"Wales",hf:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",a:"Ireland",af:"🇮🇪",id:"r2b"},
+  {r:2,h:"England",hf:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",a:"Italy",af:"🇮🇹",id:"r2c"},
+  {r:3,h:"Ireland",hf:"🇮🇪",a:"France",af:"🇫🇷",id:"r3a"},
+  {r:3,h:"Scotland",hf:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",a:"Wales",af:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",id:"r3b"},
+  {r:3,h:"Italy",hf:"🇮🇹",a:"England",af:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",id:"r3c"},
+  {r:4,h:"Wales",hf:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",a:"France",af:"🇫🇷",id:"r4a"},
+  {r:4,h:"England",hf:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",a:"Scotland",af:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",id:"r4b"},
+  {r:4,h:"Ireland",hf:"🇮🇪",a:"Italy",af:"🇮🇹",id:"r4c"},
+  {r:5,h:"Scotland",hf:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",a:"Ireland",af:"🇮🇪",id:"r5a"},
+  {r:5,h:"France",hf:"🇫🇷",a:"England",af:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",id:"r5b"},
+  {r:5,h:"Wales",hf:"🏴󠁧󠁢󠁷󠁬󠁳󠁿",a:"Italy",af:"🇮🇹",id:"r5c"},
+];
+
+// ═══════════════════════════════ STATE ══════════════════════════════════
+let mode='',gmode='solo',players=[],scores={};
+let qs=[],qIdx=0,pIdx=0,tsecs=20,tiv=null,answered=false;
+let snPreds={},snP=0,curLbTab='global';
+let selPubId='',upSelPubId='';
+const LTR=['A','B','C','D'];
+
+// ═══════════════════════════════ UTIL ═══════════════════════════════════
+function go(id){document.querySelectorAll('.screen,.fscreen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function toast(msg,d=2400){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),d);}
+function al(id,msg,type='err'){const el=document.getElementById(id);el.className='al al-'+type+(msg?' on':'');if(msg)el.textContent=msg;}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function catCol(c){const m={Science:'#22c55e',Geography:'#60a5fa',History:'#f59e0b',Literature:'#a78bfa',Art:'#f472b6',Music:'#fb923c',Maths:'#34d399',Technology:'#22d3ee',Culture:'#e879f9',Rugby:'#ef4444',Football:'#22c55e',Tennis:'#f59e0b',Olympics:'#60a5fa',Motorsport:'#ef4444',Swimming:'#60a5fa',Basketball:'#fb923c',Golf:'#86efac',Cricket:'#f59e0b',Badminton:'#a78bfa',Volleyball:'#34d399',Bowling:'#94a3b8',Athletics:'#fb923c'};return m[c]||'var(--amber)';}
+function mIcon(m){return{quiz:'🧠',riddles:'🔵',sports:'⚽',sixnations:'🏉'}[m]||'🎮';}
+function mName(m){return{quiz:'General Knowledge',riddles:'Riddles',sports:'Sports Quiz',sixnations:'Six Nations'}[m]||m;}
+function confetti(){const c=['#f59e0b','#fbbf24','#ef4444','#22c55e','#60a5fa','#a78bfa','#fb923c'];for(let i=0;i<80;i++)setTimeout(()=>{const el=document.createElement('div');el.className='cfp';el.style.cssText=`left:${Math.random()*100}vw;top:-12px;width:${7+Math.random()*8}px;height:${7+Math.random()*8}px;background:${c[~~(Math.random()*c.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation:cffall ${2+Math.random()*2.5}s linear ${Math.random()*.4}s forwards;`;document.body.appendChild(el);setTimeout(()=>el.remove(),5500);},i*35);}
+
+// ═══════════════════════════════ PUB PICKER ═════════════════════════════
+function renderPubs(containerId,which){
+  const pubs=DB.pubs(),selId=which==='reg'?selPubId:upSelPubId;
+  const el=document.getElementById(containerId);
+  el.innerHTML=pubs.map(p=>`
+    <div class="popt${selId===p.id?' sel':''}" onclick="pickPub('${p.id}','${which}')">
+      <span class="popt-ico">🍺</span>
+      <div class="popt-inf"><div class="popt-name">${p.name}</div><div class="popt-loc">${p.loc}</div></div>
+      <div class="popt-chk">${selId===p.id?'✓':''}</div>
+    </div>`).join('');
+}
+function pickPub(id,which){
+  if(which==='reg') selPubId=selPubId===id?'':id;
+  else upSelPubId=upSelPubId===id?'':id;
+  renderPubs(which==='reg'?'regPubList':'upPubList',which);
+}
+function addPub(which){
+  const nn=document.getElementById(which==='reg'?'regPubName':'upPubName').value.trim();
+  const nl=document.getElementById(which==='reg'?'regPubLoc':'upPubLoc').value.trim()||'Unknown';
+  if(!nn){toast('Please enter a pub name');return;}
+  const pubs=DB.pubs();
+  const np={id:'p'+Date.now(),name:nn,loc:nl};
+  pubs.push(np);DB.setPubs(pubs);
+  if(which==='reg') selPubId=np.id; else upSelPubId=np.id;
+  document.getElementById(which==='reg'?'regPubName':'upPubName').value='';
+  document.getElementById(which==='reg'?'regPubLoc':'upPubLoc').value='';
+  renderPubs(which==='reg'?'regPubList':'upPubList',which);
+  toast(`🍺 "${nn}" added!`);
+}
+
+// ═══════════════════════════════ AUTH ═══════════════════════════════════
+function authTab(t){
+  document.querySelectorAll('.atab').forEach((b,i)=>b.classList.toggle('on',(t==='login'&&i===0)||(t==='register'&&i===1)));
+  document.getElementById('loginForm').classList.toggle('on',t==='login');
+  document.getElementById('regForm').classList.toggle('on',t==='register');
+  if(t==='register'){selPubId='';renderPubs('regPubList','reg');}
+}
+function doLogin(){
+  const u=document.getElementById('liUser').value.trim().toLowerCase();
+  const p=document.getElementById('liPass').value;
+  al('loginErr','');
+  if(!u||!p){al('loginErr','Please fill in all fields.');return;}
+  const users=DB.users();
+  if(!users[u]){al('loginErr','Username not found. Check spelling or create an account.');return;}
+  if(users[u].pw!==btoa(p)){al('loginErr','Incorrect password. Please try again.');return;}
+  DB.setMe(users[u]);initHome();
+}
+function doRegister(){
+  const u=document.getElementById('ruUser').value.trim().toLowerCase();
+  const dn=document.getElementById('ruDisp').value.trim();
+  const p=document.getElementById('ruPass').value;
+  const tm=document.getElementById('ruTeam').value.trim();
+  al('regErr','');al('regOk','');
+  if(!u||!dn||!p){al('regErr','Please fill in username, display name and password.');return;}
+  if(p.length<6){al('regErr','Password must be at least 6 characters.');return;}
+  const users=DB.users();
+  if(users[u]){al('regErr','That username is already taken — please choose another.');return;}
+  const pub=DB.pubs().find(x=>x.id===selPubId)||null;
+  const nu={username:u,dn,pw:btoa(p),team:tm||null,pubId:pub?.id||null,pubName:pub?.name||'',gp:0,tp:0,best:0,hist:[]};
+  users[u]=nu;DB.setUsers(users);DB.setMe(nu);
+  al('regOk','Account created — welcome to The Pub Games! 🎉','ok');
+  setTimeout(()=>initHome(),1200);
+}
+function guestMode(){
+  DB.setMe({username:'guest',dn:'Guest',isGuest:true,team:null,pubId:null,pubName:'',gp:0,tp:0,best:0,hist:[]});
+  initHome();
+}
+function logout(){DB.setMe(null);selPubId='';go('authScreen');}
+
+// ═══════════════════════════════ UPGRADE (GUEST→ACCOUNT) ════════════════
+function promptUpgrade(){upSelPubId='';renderPubs('upPubList','up');al('upErr','');al('upOk','');document.getElementById('upgradeOv').classList.add('on');}
+function closeUpgrade(){document.getElementById('upgradeOv').classList.remove('on');}
+function doUpgrade(){
+  const u=document.getElementById('upUser').value.trim().toLowerCase();
+  const dn=document.getElementById('upDisp').value.trim();
+  const p=document.getElementById('upPass').value;
+  const tm=document.getElementById('upTeam').value.trim();
+  al('upErr','');al('upOk','');
+  if(!u||!dn||!p){al('upErr','Please fill in username, display name and password.');return;}
+  if(p.length<6){al('upErr','Password must be at least 6 characters.');return;}
+  const users=DB.users();
+  if(users[u]){al('upErr','That username is already taken.');return;}
+  const guest=DB.me();
+  const pub=DB.pubs().find(x=>x.id===upSelPubId)||null;
+  const nu={username:u,dn,pw:btoa(p),team:tm||null,pubId:pub?.id||null,pubName:pub?.name||'',gp:guest.gp||0,tp:guest.tp||0,best:guest.best||0,hist:guest.hist||[]};
+  users[u]=nu;DB.setUsers(users);DB.setMe(nu);
+  al('upOk','Account created — your scores have been saved! 🎉','ok');
+  setTimeout(()=>{closeUpgrade();initHome();},1300);
+}
+
+// ═══════════════════════════════ PROFILE PANEL ══════════════════════════
+function openProfile(){
+  const u=DB.me();if(!u)return;
+  if(u.isGuest){promptUpgrade();return;}
+  const pubs=DB.pubs();
+  document.getElementById('ppAv').textContent=u.dn[0].toUpperCase();
+  document.getElementById('ppName').textContent=u.dn;
+  document.getElementById('ppTag').textContent=(u.pubName||'No pub')+' '+(u.team?'· '+u.team:'');
+  document.getElementById('ppGames').textContent=u.gp||0;
+  document.getElementById('ppPts').textContent=u.tp||0;
+  document.getElementById('ppBest').textContent=u.best?(u.best+'%'):'—';
+  document.getElementById('ppPub').textContent=u.pubName||'Not set';
+  document.getElementById('ppTeam').textContent=u.team||'Not set';
+  document.getElementById('ppUser').textContent='@'+u.username;
+  document.getElementById('ppTeamInput').value=u.team||'';
+  document.getElementById('ppGuestSec').style.display='none';
+  document.getElementById('ppEditSec').style.display='block';
+  document.getElementById('panelBd').classList.add('on');
+  document.getElementById('profilePanel').classList.add('on');
+}
+function closeProfile(){document.getElementById('profilePanel').classList.remove('on');document.getElementById('panelBd').classList.remove('on');}
+function saveTeamName(){
+  const u=DB.me();if(!u||u.isGuest)return;
+  u.team=document.getElementById('ppTeamInput').value.trim()||null;
+  DB.saveUser(u);
+  document.getElementById('ppTeam').textContent=u.team||'Not set';
+  document.getElementById('ppTag').textContent=(u.pubName||'No pub')+' '+(u.team?'· '+u.team:'');
+  toast('Team name saved ✓');
+  initHome();
+}
+
+// ═══════════════════════════════ HOME ═══════════════════════════════════
+function initHome(){
+  const u=DB.me();if(!u){go('authScreen');return;}
+  document.getElementById('navAv').textContent=u.dn[0].toUpperCase();
+  document.getElementById('navName').textContent=u.dn;
+  document.getElementById('heroName').textContent=u.dn;
+  document.getElementById('heroPub').textContent=u.pubName||'No pub set';
+  const tt=document.getElementById('heroTeamTag');
+  if(u.team){document.getElementById('heroTeam').textContent=u.team;tt.style.display='flex';}else tt.style.display='none';
+  document.getElementById('stGames').textContent=u.gp||0;
+  document.getElementById('stPts').textContent=u.tp||0;
+  document.getElementById('stBest').textContent=u.best?(u.best+'%'):'—';
+  document.getElementById('guestBar').style.display=u.isGuest?'flex':'none';
+  renderRecent(u);
+  go('homeScreen');
+}
+function renderRecent(u){
+  const el=document.getElementById('recentGames');
+  if(!u.hist||!u.hist.length){el.innerHTML='<div class="empty"><span>🎮</span><p>No games yet — pick one above to get started!</p></div>';return;}
+  el.innerHTML=[...u.hist].reverse().slice(0,5).map(g=>`
+    <div class="cdsm" style="margin-bottom:9px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <span style="font-size:1.4rem">${mIcon(g.mode)}</span>
+      <div style="flex:1"><div style="font-weight:800;font-size:.88rem;color:var(--cream)">${mName(g.mode)}</div><div style="font-size:.72rem;color:var(--muted2)">${new Date(g.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div></div>
+      <div style="text-align:right"><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--amber)">${g.score} pts</div><div style="font-size:.7rem;color:var(--muted2)">${g.pct}% correct</div></div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════ LEADERBOARD ════════════════════════════
+function openLb(){curLbTab='global';document.querySelectorAll('.lbtab').forEach((t,i)=>t.classList.toggle('on',i===0));document.getElementById('pubFlt').style.display='none';renderLb('global');go('lbScreen');}
+function lbTab(t,btn){curLbTab=t;document.querySelectorAll('.lbtab').forEach(x=>x.classList.remove('on'));btn.classList.add('on');const pf=document.getElementById('pubFlt');pf.style.display=t==='pub'?'flex':'none';if(t==='pub')fillPubFilter();renderLb(t);}
+function fillPubFilter(){const sel=document.getElementById('pubFltSel');const pubs=DB.pubs();sel.innerHTML='<option value="">All pubs</option>'+pubs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');}
+function renderLb(t){
+  const el=document.getElementById('lbContent');
+  const all=Object.values(DB.users());
+  const pubs=DB.pubs();
+  const me=DB.me();
+  if(t==='global'){
+    const s=all.filter(u=>u.tp>0).sort((a,b)=>b.tp-a.tp);
+    if(!s.length){el.innerHTML=emptyHTML('🏆','No scores yet — play some games and come back!');return;}
+    el.innerHTML=lbTable(s.map((u,i)=>({rank:i+1,name:u.dn,sub:u.pubName||'No pub set',score:u.tp,played:u.gp,isMe:me&&u.username===me.username})));
+  } else if(t==='pub'){
+    const fp=document.getElementById('pubFltSel')?.value||'';
+    const pm={};
+    all.forEach(u=>{if(!u.pubId)return;if(fp&&u.pubId!==fp)return;if(!pm[u.pubId])pm[u.pubId]={id:u.pubId,name:pubs.find(p=>p.id===u.pubId)?.name||u.pubName,members:0,total:0,games:0};pm[u.pubId].members++;pm[u.pubId].total+=u.tp;pm[u.pubId].games+=u.gp;});
+    const s=Object.values(pm).sort((a,b)=>b.total-a.total);
+    if(!s.length){el.innerHTML=emptyHTML('🍺','No pub scores yet — invite your mates!');return;}
+    el.innerHTML=lbTable(s.map((p,i)=>({rank:i+1,name:p.name,sub:`${p.members} player${p.members!==1?'s':''} · ${p.games} games`,score:p.total,played:p.games,isMe:me&&me.pubId===p.id})));
+  } else if(t==='team'){
+    const tm={};
+    all.forEach(u=>{if(!u.team||!u.tp)return;const k=u.team.toLowerCase();if(!tm[k])tm[k]={name:u.team,members:0,total:0,games:0};tm[k].members++;tm[k].total+=u.tp;tm[k].games+=u.gp;});
+    const s=Object.values(tm).sort((a,b)=>b.total-a.total);
+    if(!s.length){el.innerHTML=emptyHTML('👥','No team scores yet — add a team name when registering!');return;}
+    el.innerHTML=lbTable(s.map((t,i)=>({rank:i+1,name:t.name,sub:`${t.members} member${t.members!==1?'s':''}`,score:t.total,played:t.games,isMe:me&&me.team&&me.team.toLowerCase()===t.name.toLowerCase()})));
+  } else {
+    const pm={};
+    all.forEach(u=>{if(!u.pubId||!u.gp)return;if(!pm[u.pubId])pm[u.pubId]={id:u.pubId,name:pubs.find(p=>p.id===u.pubId)?.name||u.pubName,players:0,total:0,games:0};pm[u.pubId].players++;pm[u.pubId].total+=u.tp;pm[u.pubId].games+=u.gp;});
+    const s=Object.values(pm).map(p=>({...p,avg:p.games?Math.round(p.total/p.games):0})).sort((a,b)=>b.avg-a.avg);
+    if(!s.length){el.innerHTML=emptyHTML('🏆','No inter-pub data yet — get your whole pub playing!');return;}
+    el.innerHTML=`<div class="lbnote">🏆 <strong>Inter-Pub Challenge</strong> — ranked by average points per game, so every pub competes fairly regardless of size. Get everyone signed up!</div>`+
+      lbTable(s.map((p,i)=>({rank:i+1,name:p.name,sub:`${p.players} player${p.players!==1?'s':''} · ${p.games} games`,score:p.avg,played:p.games,unit:'avg/game',isMe:me&&me.pubId===p.id})));
+  }
+}
+function lbTable(rows){
+  return `<table class="lbtbl"><thead><tr><th>#</th><th>Name</th><th style="text-align:right">Score</th></tr></thead><tbody>`+
+    rows.map((r,i)=>`<tr class="lbrow${r.isMe?' me':''}" style="animation-delay:${i*.045}s">
+      <td><div class="lbrk ${r.rank<=3?'r'+r.rank:''}">${r.rank<=3?['🥇','🥈','🥉'][r.rank-1]:r.rank}</div></td>
+      <td><div class="lbnm">${r.name}${r.isMe?' <span style="font-size:.7rem;color:var(--amber);opacity:.8">(you)</span>':''}</div><div class="lbsb">${r.sub}</div></td>
+      <td><div class="lbsc">${r.score}</div><div class="lbmt">${r.played} game${r.played!==1?'s':''}${r.unit?' · '+r.unit:''}</div></td>
+    </tr>`).join('')+`</tbody></table>`;
+}
+function emptyHTML(icon,txt){return `<div class="empty"><span>${icon}</span><p>${txt}</p></div>`;}
+
+// ═══════════════════════════════ SETUP MODAL ════════════════════════════
+function openSetup(m){
+  mode=m;
+  const t={quiz:'General Knowledge',riddles:'Riddles',sports:'Sports Quiz',sixnations:'Six Nations Predictor'};
+  document.getElementById('setupTit').textContent=t[m];
+  document.getElementById('setupSettings').style.display=m==='sixnations'?'none':'grid';
+  pickMode('solo');
+  document.getElementById('setupOv').classList.add('on');
+}
+function closeSetup(){document.getElementById('setupOv').classList.remove('on');}
+function pickMode(m){
+  gmode=m;
+  document.querySelectorAll('.mopt').forEach(o=>o.classList.toggle('on',o.dataset.m===m));
+  const u=DB.me();
+  players=m==='solo'?[(u&&!u.isGuest?u.dn:'You')]:[(u&&!u.isGuest?u.dn:'Player 1'),'Player 2'];
+  document.getElementById('addPBtn').style.display=m==='solo'?'none':'block';
+  renderSetupPlayers();
+}
+function renderSetupPlayers(){
+  document.getElementById('setupPRows').innerHTML=players.map((p,i)=>`
+    <div class="prow" style="animation-delay:${i*.05}s">
+      <div class="pnum">${i+1}</div>
+      <input type="text" value="${p}" placeholder="Player ${i+1}" oninput="players[${i}]=this.value">
+      ${(gmode==='versus'&&players.length>2)?`<button class="rmp" onclick="rmPlayer(${i})">✕</button>`:''}
+    </div>`).join('');
+}
+function addSP(){if(players.length>=8)return;players.push('Player '+(players.length+1));renderSetupPlayers();}
+function rmPlayer(i){if(players.length<=2)return;players.splice(i,1);renderSetupPlayers();}
+function startGame(){
+  players=players.map((p,i)=>p.trim()||'Player '+(i+1));
+  scores={};players.forEach(p=>scores[p]=0);
+  closeSetup();
+  if(mode==='quiz')launchQ(GK);
+  else if(mode==='sports')launchQ(SPORTS);
+  else if(mode==='riddles')launchRiddles();
+  else launchSN();
+}
+
+// ═══════════════════════════════ QUIZ ENGINE ════════════════════════════
+function launchQ(pool){
+  const cnt=parseInt(document.getElementById('qcnt').value);
+  tsecs=parseInt(document.getElementById('tmrsel').value);
+  qs=shuffle([...pool]).slice(0,Math.min(cnt,pool.length));
+  qIdx=0;pIdx=0;
+  document.getElementById('qmode').textContent=mode==='sports'?'SPORTS QUIZ':'GENERAL KNOWLEDGE';
+  go('quizScreen');drawQ();
+}
+function drawQ(){
+  answered=false;clearInterval(tiv);
+  const q=qs[qIdx],player=players[pIdx%players.length];
+  document.getElementById('qcat').textContent=q.cat;
+  document.getElementById('qcat').style.color=catCol(q.cat);
+  document.getElementById('qnum').textContent=`Question ${qIdx+1} of ${qs.length}`;
+  document.getElementById('whoav').textContent=player[0].toUpperCase();
+  document.getElementById('whonm').textContent=player;
+  document.getElementById('who').style.display=gmode==='solo'?'none':'flex';
+  document.getElementById('progf').style.width=`${(qIdx/qs.length)*100}%`;
+  document.getElementById('qtxt').textContent=q.q;
+  document.getElementById('fb').className='fb';
+  document.getElementById('agrid').innerHTML=q.a.map((a,i)=>`<button class="abtn" onclick="pick(${i})"><span class="altr">${LTR[i]}</span>${a}</button>`).join('');
+  drawStrip('strip',player);
+  if(tsecs>0){
+    const tb=document.getElementById('tmr');tb.style.display='flex';tb.className='tmr';
+    let t=tsecs;document.getElementById('tmrn').textContent=t;
+    tiv=setInterval(()=>{t--;document.getElementById('tmrn').textContent=t;
+      if(t<=5)tb.className='tmr danger';else if(t<=10)tb.className='tmr warn';
+      if(t<=0){clearInterval(tiv);if(!answered)timeUp();}},1000);
+  } else document.getElementById('tmr').style.display='none';
+}
+function timeUp(){
+  answered=true;const q=qs[qIdx];
+  document.querySelectorAll('.abtn').forEach((b,i)=>{b.disabled=true;if(i===q.c)b.classList.add('reveal');});
+  showFb('fb','fbico','fbbody',false,`⏰ Time's up! The answer was <strong>${q.a[q.c]}</strong>. ${q.f}`);
+}
+function pick(idx){
+  if(answered)return;answered=true;clearInterval(tiv);
+  const q=qs[qIdx],player=players[pIdx%players.length];
+  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
+  const ok=idx===q.c;
+  if(ok){scores[player]+=10;document.querySelectorAll('.abtn')[idx].classList.add('correct');}
+  else{document.querySelectorAll('.abtn')[idx].classList.add('wrong');document.querySelectorAll('.abtn')[q.c].classList.add('reveal');}
+  showFb('fb','fbico','fbbody',ok,ok?`🎉 <strong>+10 points!</strong> ${q.f}`:`The answer was <strong>${q.a[q.c]}</strong>. ${q.f}`);
+  drawStrip('strip',player);
+}
+function nextQ(){pIdx++;qIdx++;if(qIdx>=qs.length)showResults();else drawQ();}
+
+// ═══════════════════════════════ RIDDLES ════════════════════════════════
+function launchRiddles(){
+  const cnt=parseInt(document.getElementById('qcnt').value)||10;
+  qs=shuffle([...RIDDLES]).slice(0,Math.min(cnt,RIDDLES.length));
+  qIdx=0;pIdx=0;go('riddlesScreen');drawRiddle();
+}
+function drawRiddle(){
+  answered=false;const r=qs[qIdx],player=players[pIdx%players.length];
+  document.getElementById('rnum').textContent=`Riddle ${qIdx+1} of ${qs.length}`;
+  document.getElementById('rwhoav').textContent=player[0].toUpperCase();
+  document.getElementById('rwhonm').textContent=player;
+  document.getElementById('rwho').style.display=gmode==='solo'?'none':'flex';
+  document.getElementById('rico').textContent=r.icon;
+  document.getElementById('rq').textContent=r.q;
+  document.getElementById('rinput').value='';
+  document.getElementById('htxt').textContent=r.hint;
+  document.getElementById('htxt').className='htxt';
+  document.getElementById('rfb').className='fb';
+  drawStrip('rstrip',player);
+  setTimeout(()=>document.getElementById('rinput').focus(),80);
+}
+function showHint(){document.getElementById('htxt').className='htxt on';}
+function checkRiddle(){
+  if(answered)return;
+  const r=qs[qIdx],val=document.getElementById('rinput').value.trim().toLowerCase();
+  if(!val)return;answered=true;
+  const player=players[pIdx%players.length];
+  const ok=r.a.some(x=>val.includes(x)||x.includes(val));
+  if(ok)scores[player]+=10;
+  showFb('rfb','rfbico','rfbbody',ok,ok?`🎉 <strong>+10 points!</strong> ${r.f}`:`The answer was <strong>${r.a[0]}</strong>. ${r.f}`);
+  drawStrip('rstrip',player);
+}
+function nextRiddle(){pIdx++;qIdx++;if(qIdx>=qs.length)showResults();else drawRiddle();}
+
+// ═══════════════════════════════ SIX NATIONS ════════════════════════════
+function launchSN(){snPreds={};players.forEach(p=>snPreds[p]={});snP=0;go('snScreen');drawSN();}
+function drawSN(){
+  document.getElementById('snTabs').innerHTML=players.map((p,i)=>`<button class="snptab${i===snP?' on':''}" onclick="snSwitch(${i})">${p}</button>`).join('');
+  let html='',lr=0;
+  SN.forEach(f=>{
+    if(f.r!==lr){html+=`<div class="rlbl">Round ${f.r}</div>`;lr=f.r;}
+    const pred=(snPreds[players[snP]]||{})[f.id]||'';
+    html+=`<div class="fix${pred?' done':''}">
+      <div class="ts"><span class="tflag">${f.hf}</span><span class="tname">${f.h}</span></div>
+      <div class="vsm"><span class="vsl">VS</span>
+        <div class="pbs">
+          <button class="pb${pred==='home'?' ph':''}" onclick="snPick('${f.id}','home')" title="${f.h} win">🏠</button>
+          <button class="pb${pred==='draw'?' pd':''}" onclick="snPick('${f.id}','draw')" title="Draw">—</button>
+          <button class="pb${pred==='away'?' pa':''}" onclick="snPick('${f.id}','away')" title="${f.a} win">✈️</button>
+        </div>
+      </div>
+      <div class="ts aw"><span class="tflag">${f.af}</span><span class="tname">${f.a}</span></div>
+    </div>`;
+  });
+  document.getElementById('snFix').innerHTML=html;
+}
+function snSwitch(i){snP=i;drawSN();}
+function snPick(id,r){snPreds[players[snP]][id]=r;drawSN();}
+function snSubmit(){
+  let miss=false;
+  players.forEach(p=>SN.forEach(f=>{if(!snPreds[p][f.id])miss=true;}));
+  if(miss){toast('⚠️ Some predictions are missing!');return;}
+  // Save to profile if logged in
+  const u=DB.me();
+  if(u&&!u.isGuest){u.gp=(u.gp||0)+1;DB.saveUser(u);}
+  toast('🏉 Predictions locked in! Good luck!');
+  setTimeout(()=>go('homeScreen'),1400);
+}
+
+// ═══════════════════════════════ RESULTS ════════════════════════════════
+function showResults(){
+  const sorted=players.map(p=>({name:p,score:scores[p]})).sort((a,b)=>b.score-a.score);
+  const max=qs.length*10;
+  const pct=Math.round((sorted[0].score/max)*100);
+  // Save score
+  const u=DB.me();
+  if(u){
+    u.gp=(u.gp||0)+1;
+    const pts=gmode==='solo'?sorted[0].score:sorted[0].score;
+    u.tp=(u.tp||0)+pts;
+    if(pct>(u.best||0))u.best=pct;
+    if(!u.hist)u.hist=[];
+    u.hist.push({mode,score:pts,pct,date:Date.now()});
+    DB.saveUser(u);
+  }
+  document.getElementById('rwin').textContent=sorted.length>1?sorted[0].name:'You';
+  document.getElementById('rsub').textContent=`${sorted[0].score} pts · ${pct}% correct`;
+  document.getElementById('guestNudge').style.display=(u&&u.isGuest)?'flex':'none';
+  // Podium
+  const pod=document.getElementById('pod');pod.innerHTML='';
+  if(sorted.length>=2){
+    const ord=sorted.length>=3?[sorted[1],sorted[0],sorted[2]]:[sorted[1],sorted[0]];
+    ['🥈','🥇','🥉'].slice(0,ord.length).forEach((e,i)=>{
+      pod.innerHTML+=`<div class="pc"><div class="pc-em">${e}</div><div class="pc-nm">${ord[i].name}</div><div class="pc-pts">${ord[i].score} pts</div><div class="pc-blk">${i===1?'1st':i===0?'2nd':'3rd'}</div></div>`;
+    });
+  }
+  document.getElementById('fsb').innerHTML=sorted.map((p,i)=>{
+    const pp=Math.round((p.score/max)*100);
+    return `<div class="sbr" style="animation-delay:${i*.08}s"><div class="sbrk">${i+1}</div><div class="sbnm">${p.name}</div><div><div class="sbsc">${p.score}</div><div class="sbpc">${pp}%</div></div></div>`;
+  }).join('');
+  go('resultsScreen');confetti();
+}
+function rematch(){
+  players.forEach(p=>scores[p]=0);qIdx=0;pIdx=0;qs=shuffle([...qs]);
+  if(mode==='riddles'){go('riddlesScreen');drawRiddle();}else{go('quizScreen');drawQ();}
+}
+
+// ═══════════════════════════════ HELPERS ════════════════════════════════
+function showFb(id,iid,bid,ok,msg){
+  const el=document.getElementById(id);el.className='fb on '+(ok?'ok':'bad');
+  document.getElementById(iid).textContent=ok?'🎉':'😬';
+  document.getElementById(bid).innerHTML=msg;
+}
+function drawStrip(id,active){
+  const el=document.getElementById(id);
+  el.innerHTML=players.map(p=>`<div class="chip${p===active?' on':''}"><span class="cn">${p}</span><span class="cs">${scores[p]} pts</span></div>`).join('');
+  el.style.display=gmode==='solo'?'none':'flex';
+}
+function confirmQuit(){if(confirm('Quit this game? Your progress will still be saved.'))go('homeScreen');}
+
+// ═══════════════════════════════ BOOT ═══════════════════════════════════
+(()=>{const u=DB.me();if(u)initHome();else go('authScreen');})();
+</script>
+</body>
 </html>
